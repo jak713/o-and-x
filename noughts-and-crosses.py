@@ -10,11 +10,11 @@ board = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 # function to print board as 3x3
 def print_board(board) -> None:
     print("\n")
-    print("  | 0 | 1 | 2 |")
-    print("---------------")
+    print("\t\t  | 0 | 1 | 2 |")
+    print("\t\t---------------")
     for idx, line in enumerate(board):
-      print(f"{idx} | {line[0]} | {line[1]} | {line[2]} |")
-      print("---------------")
+      print(f"\t\t{idx} | {line[0]} | {line[1]} | {line[2]} |")
+      print("\t\t---------------")
     print("\n")
 
     return None
@@ -48,6 +48,8 @@ def input_symbol(board:list,symbol:str,row:int,column:int) -> list:
 
 # function to evaluate whether the chosen row and column are unoccupied
 def is_valid_move(board, row, column) -> bool:
+  if len(str(row)) > 1 or len(str(column)) > 1:
+    return False
   try:
     row = int(row)
     column = int(column)
@@ -74,6 +76,7 @@ def run(board: list[list]) -> None:
     print(f"Move belongs to {symbol.upper()}!")
     row, column = input_row_column()
     while not is_valid_move(board, row, column):
+      print("I cannot accept this move, check your input!")
       row,column = input_row_column()
     row, column = int(row), int(column)
     board = input_symbol(board,symbol,row,column)
@@ -90,13 +93,15 @@ def run(board: list[list]) -> None:
 
 # vs computer loop (random.randint(0,2) until somehing sticks)
 def run_vs_comp(board: list[list]):
-  user_symbol = input("Do you want to be X or O? ").lower()
-  while user_symbol not in ["x", "o"]:
+  user_symbol = input("Do you want to be X or O? ")
+  while user_symbol.lower() not in ["x", "o"]:
     user_symbol = input("Do you want to be X or O? ")
-  if user_symbol == "x":
+  if user_symbol.lower() == "x":
     computer_symbol = "o"
+    user_symbol = "x"
   else:
     computer_symbol = "x"
+    user_symbol = "o"
 
   moves = 9
   print_board(board)
@@ -114,6 +119,7 @@ def run_vs_comp(board: list[list]):
     else:
       u_row, u_column = input_row_column()
       while not is_valid_move(board, u_row, u_column):
+        print("I cannot accept this move, check your input!")
         u_row,u_column = input_row_column()
       u_row, u_column = int(u_row), int(u_column)
       board = input_symbol(board,user_symbol,u_row,u_column)
@@ -133,12 +139,13 @@ def run_vs_comp(board: list[list]):
 
 
 # Tests
-assert has_won([["x", "x", "o"], ["", "o", "o"], ["x", "", ""]], "x") == False
-assert has_won([["x", "x", "x"], ["", "o", ""], ["o", "o", ""]], "x") == True
-assert has_won([["x", "o", "o"], ["x", "o", ""], ["x", "", ""]], "x") == True
-assert has_won([["o", "x", "o"], ["x", "", ""], ["x", "o", ""]], "x") == False
-assert has_won([["o", "x", "o"], ["x", "o", ""], ["x", "x", "o"]], "o") == True
-assert has_won([["o", "x", "x"], ["o", "x", ""], ["x", "o", ""]], "x") == True
+def test():
+  assert has_won([["x", "x", "o"], ["", "o", "o"], ["x", "", ""]], "x") == False
+  assert has_won([["x", "x", "x"], ["", "o", ""], ["o", "o", ""]], "x") == True
+  assert has_won([["x", "o", "o"], ["x", "o", ""], ["x", "", ""]], "x") == True
+  assert has_won([["o", "x", "o"], ["x", "", ""], ["x", "o", ""]], "x") == False
+  assert has_won([["o", "x", "o"], ["x", "o", ""], ["x", "x", "o"]], "o") == True
+  assert has_won([["o", "x", "x"], ["o", "x", ""], ["x", "o", ""]], "x") == True
 
 # parser for computer/self play
 parser = argparse.ArgumentParser()
