@@ -7,8 +7,14 @@ board = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
 
 # function to print board as 3x3
 def print_board(board) -> None:
-    for line in board:
-        print(line)
+    print("\n")
+    print("  | 0 | 1 | 2 |")
+    print("---------------")
+    for idx, line in enumerate(board):
+      print(f"{idx} | {line[0]} | {line[1]} | {line[2]} |")
+      print("---------------")
+    print("\n")
+
     return None
 
 
@@ -112,7 +118,7 @@ def run_vs_comp(board: list[list]):
       print_board(board)
       print("Let's see...")
       if has_won(board, user_symbol):
-        print(f"Indeed! {user_symbol.upper()} won!")
+        print(f"You've won!")
         return
       else:
         print("Must have been the wind...")
