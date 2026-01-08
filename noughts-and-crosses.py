@@ -1,4 +1,6 @@
+import argparse
 import random
+
 # noughts and crosses game
 
 # 3x3 graph, "drawing board"
@@ -138,4 +140,21 @@ assert has_won([["o", "x", "o"], ["x", "", ""], ["x", "o", ""]], "x") == False
 assert has_won([["o", "x", "o"], ["x", "o", ""], ["x", "x", "o"]], "o") == True
 assert has_won([["o", "x", "x"], ["o", "x", ""], ["x", "o", ""]], "x") == True
 
-run_vs_comp(board)
+# parser for computer/self play
+parser = argparse.ArgumentParser()
+parser.add_argument("-c", "--computer", help="Play against computer.", action="store_true")
+parser.add_argument("-s", "--self", help="Play against self.", action="store_true")
+args = parser.parse_args()
+
+if args.computer:
+  run_vs_comp(board)
+elif args.self:
+  run(board)
+else:
+  decision = input("Would you like to play against yourself, a friend, or the computer? ")
+  while decision.lower() not in ["myself", "computer", "friend"]:
+    decision = input("Would you like to play against yourself, a friend, or the computer? ")
+  if decision in ["myself", "friend"]:
+    run(board)
+  else:
+    run_vs_comp(board)
