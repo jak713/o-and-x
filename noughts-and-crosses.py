@@ -1,3 +1,4 @@
+import random
 # noughts and crosses game
 
 # 3x3 graph, "drawing board"
@@ -54,10 +55,10 @@ def input_row_column():
   return row, column
 
 # game loop
-def run(board):
+def run(board: list[list]) -> None:
   moves = 9
+  print_board(board)
   while moves > 0:
-    print_board(board)
     if moves % 2 == 0:
       symbol = "x"
     else:
@@ -77,6 +78,52 @@ def run(board):
       print("Must have been the wind...")
     moves -= 1
 
+  print("The game is over, it seems nobody won! Try again soon.")
+
+# vs computer loop (random.randint(0,2) until somehing sticks)
+def run_vs_comp(board: list[list]):
+  user_symbol = input("Do you want to be X or O? ").lower()
+  while user_symbol not in ["x", "o"]:
+    user_symbol = input("Do you want to be X or O? ")
+  if user_symbol == "x":
+    computer_symbol = "o"
+  else:
+    computer_symbol = "x"
+
+  moves = 9
+  print_board(board)
+  while moves > 0:
+    if moves % 2 != 0:
+      print("Computer is thinking...")
+      c_row, c_column = random.randint(0,2), random.randint(0,2)
+      while not is_valid_move(board, c_row, c_column):
+        c_row, c_column = random.randint(0,2), random.randint(0,2)
+      board = input_symbol(board, computer_symbol, c_row, c_column)
+      print_board(board)
+      if has_won(board, computer_symbol):
+        print("Computer won!")
+        return
+    else:
+      u_row, u_column = input_row_column()
+      while not is_valid_move(board, u_row, u_column):
+        u_row,u_column = input_row_column()
+      u_row, u_column = int(u_row), int(u_column)
+      board = input_symbol(board,user_symbol,u_row,u_column)
+      print_board(board)
+      print("Let's see...")
+      if has_won(board, user_symbol):
+        print(f"Indeed! {user_symbol.upper()} won!")
+        return
+      else:
+        print("Must have been the wind...")
+
+    moves -= 1
+  print("The game is over, it seems nobody won! Try again soon.")
+
+
+
+
+
 # Tests
 assert has_won([["x", "x", "o"], ["", "o", "o"], ["x", "", ""]], "x") == False
 assert has_won([["x", "x", "x"], ["", "o", ""], ["o", "o", ""]], "x") == True
@@ -85,4 +132,4 @@ assert has_won([["o", "x", "o"], ["x", "", ""], ["x", "o", ""]], "x") == False
 assert has_won([["o", "x", "o"], ["x", "o", ""], ["x", "x", "o"]], "o") == True
 assert has_won([["o", "x", "x"], ["o", "x", ""], ["x", "o", ""]], "x") == True
 
-run(board)
+run_vs_comp(board)
